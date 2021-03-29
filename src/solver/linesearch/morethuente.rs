@@ -21,7 +21,7 @@
 use crate::prelude::*;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
-use std::default::Default;
+use std::{default::Default, fmt::Debug};
 
 /// The More-Thuente line search is a method to find a step length which obeys the strong Wolfe
 /// conditions.
@@ -216,8 +216,9 @@ where
         + DeserializeOwned
         + ArgminSub<P, P>
         + ArgminDot<P, F>
-        + ArgminScaledAdd<P, F, P>,
-    F: ArgminFloat,
+        + ArgminScaledAdd<P, F, P>
+        + Debug,
+    F: ArgminFloat + Debug,
 {
     const NAME: &'static str = "More-Thuente Line search";
 
@@ -230,8 +231,10 @@ where
             self.search_direction_b,
             "MoreThuenteLineSearch: Search direction not initialized. Call `set_search_direction`."
         );
+        println!("search_direction: {:#?}", &self.search_direction);
 
         self.init_param = state.get_param();
+        println!("init_param: {:#?}", &self.init_param);
 
         let cost = state.get_cost();
         self.finit = if cost.is_infinite() {
@@ -239,12 +242,15 @@ where
         } else {
             cost
         };
-
+        println!("cost: {:#?}", cost);
+        println!("finit: {:#?}", &self.finit);
         self.init_grad = state
             .get_grad()
             .unwrap_or_else(|| op.gradient(&self.init_param).unwrap());
+        println!("init_grad: {:#?}", &self.init_grad);
 
         self.dginit = self.init_grad.dot(&self.search_direction);
+        println!("dginit: {}", self.dginit);
 
         // compute search direction in 1D
         if self.dginit >= F::from_f64(0.0).unwrap() {
