@@ -187,11 +187,12 @@ impl<P: Default, F: ArgminFloat> Default for MoreThuenteLineSearch<P, F> {
 
 impl<P, F> ArgminLineSearch<P, F> for MoreThuenteLineSearch<P, F>
 where
-    P: Clone + Serialize + ArgminSub<P, P> + ArgminDot<P, F> + ArgminScaledAdd<P, F, P>,
+    P: Clone + Serialize + ArgminSub<P, P> + ArgminDot<P, F> + ArgminScaledAdd<P, F, P> + Debug,
     F: ArgminFloat,
 {
     /// Set search direction
     fn set_search_direction(&mut self, search_direction: P) {
+        println!("set_search_direction: {:#?}", &search_direction);
         self.search_direction_b = Some(search_direction);
     }
 
