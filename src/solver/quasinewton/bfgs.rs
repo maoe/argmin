@@ -108,6 +108,10 @@ where
         let param = state.get_param();
         let cur_cost = state.get_cost();
         let prev_grad = state.get_grad().unwrap();
+        println!("BFGS::next_iter/param: {:#?}", &param);
+        println!("BFGS::next_iter/cur_cost: {:#?}", cur_cost);
+        println!("BFGS::next_iter/prev_grad: {:#?}", &prev_grad);
+        println!("BFGS::next_iter/inv_hessian: {:#?}", &self.inv_hessian);
 
         let p = self
             .inv_hessian
