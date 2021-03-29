@@ -153,23 +153,35 @@ where
 
         let e = self.inv_hessian.eye_like();
         let mat1: O::Hessian = sk.dot(&yk);
+        println!("BFGS::next_iter/mat1#0: {:#?}", &mat1);
         let mat1 = mat1.mul(&rhok);
+        println!("BFGS::next_iter/mat1#1: {:#?}", &mat1);
 
         let mat2 = mat1.clone().t();
+        println!("BFGS::next_iter/mat2: {:#?}", &mat2);
 
         let tmp1 = e.sub(&mat1);
         let tmp2 = e.sub(&mat2);
+        println!("BFGS::next_iter/tmp1: {:#?}", &tmp1);
+        println!("BFGS::next_iter/tmp2: {:#?}", &tmp2);
 
         let sksk: O::Hessian = sk.dot(&sk);
+        println!("BFGS::next_iter/sksk#0: {:#?}", &sksk);
         let sksk = sksk.mul(&rhok);
+        println!("BFGS::next_iter/sksk#1: {:#?}", &sksk);
 
         // if state.get_iter() == 0 {
         //     let ykyk: f64 = yk.dot(&yk);
         //     self.inv_hessian = self.inv_hessian.eye_like().mul(&(yksk / ykyk));
         //     println!("{:?}", self.inv_hessian);
         // }
-
-        self.inv_hessian = tmp1.dot(&self.inv_hessian.dot(&tmp2)).add(&sksk);
+        let x = &self.inv_hessian.dot(&tmp2);
+        println!("BFGS::next_iter/x#0: {:#?}", &x);
+        let x = tmp1.dot(x);
+        println!("BFGS::next_iter/x#1: {:#?}", &x);
+        let x = x.add(&sksk);
+        println!("BFGS::next_iter/x#2: {:#?}", &x);
+        self.inv_hessian = x;
 
         Ok(ArgminIterData::new().param(xk1).cost(next_cost).grad(grad))
     }
