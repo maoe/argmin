@@ -111,7 +111,7 @@ where
         println!("BFGS::next_iter/param: {:#?}", &param);
         println!("BFGS::next_iter/cur_cost: {:#?}", cur_cost);
         println!("BFGS::next_iter/prev_grad: {:#?}", &prev_grad);
-        println!("BFGS::next_iter/inv_hessian: {:#?}", &self.inv_hessian);
+        println!("BFGS::next_iter/inv_hessian#0: {:#?}", &self.inv_hessian);
 
         let p = self
             .inv_hessian
@@ -175,6 +175,7 @@ where
         //     self.inv_hessian = self.inv_hessian.eye_like().mul(&(yksk / ykyk));
         //     println!("{:?}", self.inv_hessian);
         // }
+        println!("BFGS::next_iter/inv_hessian#1: {:#?}", self.inv_hessian);
         let x = &self.inv_hessian.dot(&tmp2);
         println!("BFGS::next_iter/x#0: {:#?}", &x);
         let x = tmp1.dot(x);
