@@ -39,6 +39,8 @@
 //! in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above,
 //! without any additional terms or conditions.
 
+use std::borrow::Cow;
+
 use argmin::core::observers::Observe;
 use argmin::core::{Error, State, KV};
 use slog::{info, o, Drain, Key, Record, Serializer};
@@ -181,7 +183,11 @@ where
 {
     fn serialize(&self, _record: &Record, serializer: &mut dyn Serializer) -> slog::Result {
         for (k, &v) in self.0.get_func_counts().iter() {
-            serializer.emit_u64(Key::from(k.clone()), v)?;
+            let key = match k {
+                Cow::Borrowed(b) => Key::from(*b),
+                Cow::Owned(o) => Key::from(o.clone()),
+            };
+            serializer.emit_u64(key, v)?;
         }
         serializer.emit_str(Key::from("best_cost"), &self.0.get_best_cost().to_string())?;
         serializer.emit_str(Key::from("cost"), &self.0.get_cost().to_string())?;

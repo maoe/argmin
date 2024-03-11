@@ -6,6 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 use std::{
+    borrow::Cow,
     collections::{HashMap, HashSet},
     sync::{Arc, Mutex},
 };
@@ -18,7 +19,7 @@ use time::Duration;
 
 pub type RunName = String;
 type MetricName = String;
-type CountName = String;
+type CountName = Cow<'static, str>;
 type SettingName = String;
 
 pub struct Metric {
@@ -122,8 +123,8 @@ impl Run {
             .collect()
     }
 
-    pub fn add_func_counts<T: AsRef<str>>(&mut self, name: T, count: FuncCount) -> &mut Self {
-        self.func_counts.insert(name.as_ref().to_string(), count);
+    pub fn add_func_counts(&mut self, name: &CountName, count: FuncCount) -> &mut Self {
+        self.func_counts.insert(name.clone(), count);
         self
     }
 }

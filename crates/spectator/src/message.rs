@@ -5,7 +5,10 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use std::collections::{HashMap, HashSet};
+use std::{
+    borrow::Cow,
+    collections::{HashMap, HashSet},
+};
 
 use anyhow::Error;
 use argmin::core::{TerminationStatus, KV};
@@ -53,7 +56,7 @@ pub enum Message {
         /// Current iteration
         iter: u64,
         /// Function counts
-        kv: HashMap<String, u64>,
+        kv: HashMap<Cow<'static, str>, u64>,
     },
     /// Parameter vector
     Param {

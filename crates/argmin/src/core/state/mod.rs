@@ -14,7 +14,7 @@ pub use linearprogramstate::LinearProgramState;
 pub use populationstate::PopulationState;
 
 use crate::core::{ArgminFloat, Problem, TerminationReason, TerminationStatus};
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap};
 
 /// Minimal interface which struct used for managing state in solvers have to implement.
 ///
@@ -88,7 +88,7 @@ pub trait State {
     fn func_counts<O>(&mut self, problem: &Problem<O>);
 
     /// Returns current cost function evaluation count
-    fn get_func_counts(&self) -> &HashMap<String, u64>;
+    fn get_func_counts(&self) -> &HashMap<Cow<'static, str>, u64>;
 
     /// Set time required since the beginning of the optimization until the current iteration
     fn time(&mut self, time: Option<instant::Duration>) -> &mut Self;

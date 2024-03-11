@@ -9,7 +9,7 @@ use crate::core::{ArgminFloat, Problem, State, TerminationReason, TerminationSta
 use instant;
 #[cfg(feature = "serde1")]
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap};
 
 /// Maintains the state from iteration to iteration of a solver
 ///
@@ -81,7 +81,7 @@ pub struct IterState<P, G, J, H, R, F> {
     /// Maximum number of iterations
     pub max_iters: u64,
     /// Evaluation counts
-    pub counts: HashMap<String, u64>,
+    pub counts: HashMap<Cow<'static, str>, u64>,
     /// Time required so far
     pub time: Option<instant::Duration>,
     /// Status of optimization execution
@@ -1357,7 +1357,7 @@ where
     /// ```
     fn func_counts<O>(&mut self, problem: &Problem<O>) {
         for (k, &v) in problem.counts.iter() {
-            let count = self.counts.entry(k.to_string()).or_insert(0);
+            let count = self.counts.entry(Cow::Borrowed(k)).or_insert(0);
             *count = v
         }
     }
@@ -1377,7 +1377,7 @@ where
     /// # hm.insert("test2".to_string(), 10u64);
     /// # assert_eq!(*counts, hm);
     /// ```
-    fn get_func_counts(&self) -> &HashMap<String, u64> {
+    fn get_func_counts(&self) -> &HashMap<Cow<'static, str>, u64> {
         &self.counts
     }
 
